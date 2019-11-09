@@ -8,6 +8,38 @@
 
 // === Protected Functions ===
 //
+
+//
+/*!
+* @brief Returns with TRUE, if the input character is alphanumeric
+*
+* @param[in] source The input character.
+*
+* @return True, if alphanumeric.
+*/
+static bool IsAlpha (const char source)
+{
+    bool b_ret = true;
+    if ((source >= '0') && (source <= '9'))
+    {
+        // Valid
+    }
+    else if ((source >= 'A') && (source <= 'Z'))
+    {
+        // Valid
+    }
+    else if ((source >= 'a') && (source <= 'z'))
+    {
+        // Valid
+    }
+    else
+    {
+        b_ret = false;
+    }
+
+    return b_ret;
+}
+
 /*!
 * @brief Splits the source string to the instruction parameters such as:
 *           operating code, address, data and comment.
@@ -34,13 +66,14 @@ static bool SplitInstruction (const char * const p_source, instruction_t * const
 
     int i = 0;
     int j = 0;
+    bool alpha;
     while (p_source[i])
     {
         // Splitting the opcode, address and data
         //  handle comments different type via delimiter
         if (state != st_Comment)
         {
-            if (p_source[i] != INPUT_DELIM)
+            if ( alpha = IsAlpha(p_source[i]) )
             {
                 buffer[j] = p_source[i];
                 j++;
@@ -295,8 +328,12 @@ static void FormatAddressData (instruction_t * const p_instruction)
         break;
         case lshdAddress:
             b_convertAddress = false;
-            hexa[strlen(HEX_DATA_PATTERN) - 1] = p_instruction->address[strlen(p_instruction->address) - 1];
-            hexa[strlen(HEX_DATA_PATTERN) - 2] = p_instruction->address[strlen(p_instruction->address) - 2];
+            int instructionAddressSize = strlen(p_instruction->address);
+            hexa[HEX_LIMIT - 1] = p_instruction->address[instructionAddressSize - 1];
+            if (instructionAddressSize > 1)
+            {
+                hexa[HEX_LIMIT - 2] = p_instruction->address[instructionAddressSize - 2];
+            }
         break;
         default:
             // NOP

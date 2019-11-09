@@ -1,0 +1,5 @@
+load 234f 2     ; load settings
+write 2 a       ; writes 0xa  at 0x2 address
+read 12a4f ffff ; reads the 0x12a4f address
+nop 15 af       ; no operation
+wait 16 8       ; wait 8 assertion

@@ -1,0 +1,48 @@
+# depslib dependency file v1.0
+1573062283 source:d:\development\avalonsimulator\avalonsimulator_v2\avsimcompiler\source\compile.c
+	"compile.h"
+
+1573062337 d:\development\avalonsimulator\avalonsimulator_v2\avsimcompiler\source\compile.h
+	<stdio.h>
+	<stddef.h>
+	<string.h>
+	<stdlib.h>
+	<ctype.h>
+	<stdbool.h>
+	"file_access.h"
+
+1572983337 d:\development\avalonsimulator\avalonsimulator_v2\avsimcompiler\source\file_access.h
+	<stdio.h>
+	<stddef.h>
+	<stdlib.h>
+	<string.h>
+	<stdbool.h>
+
+1572983320 source:d:\development\avalonsimulator\avalonsimulator_v2\avsimcompiler\source\file_access.c
+	"file_access.h"
+
+1572983432 source:d:\development\avalonsimulator\avalonsimulator_v2\avsimcompiler\source\notify_invalid.c
+	"notify_invalid.h"
+
+1572983436 d:\development\avalonsimulator\avalonsimulator_v2\avsimcompiler\source\notify_invalid.h
+	<stdio.h>
+	<stdbool.h>
+	"compile.h"
+
+1572983363 source:d:\development\avalonsimulator\avalonsimulator_v2\avsimcompiler\test\test.c
+	"test.h"
+
+1572983369 d:\development\avalonsimulator\avalonsimulator_v2\avsimcompiler\test\test.h
+	<stdio.h>
+	"..\source\file_access.h"
+	"..\source\compile.h"
+	"..\source\notify_invalid.h"
+
+1572983503 source:d:\development\avalonsimulator\avalonsimulator_v2\avsimcompiler\source\main.c
+	<stdio.h>
+	<time.h>
+	"file_access.h"
+	"compile.h"
+	"notify_invalid.h"
+	"..\test\test.h"
+

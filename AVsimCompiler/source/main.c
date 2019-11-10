@@ -7,22 +7,13 @@
 #include <stdio.h>
 #include <time.h>
 
-#include "file_access.h"
-#include "compile.h"
-#include "notify_invalid.h"
+#include "main.h"
 
-#if TEST_ENABLE
-# include "..\test\test.h"
-#endif // TEST_ENABLE
-
-#define TEST_ON 0
-#define SOURCE_FILE "instruction.av"
-#define TARGET_FILE "instruction.mem"
 
 // === Protected Function Prototypes ===
 //
-static inline void StartDisplay (const char * const source, const char * const target);
-static bool HandleArgument(int argc, char ** pp_argv, char **pp_source, char **pp_target);
+static inline void StartDisplay (const char * const p_sourcePath, const char * const p_targetPath, const char * const p_verilogDefPath);
+static bool GeneratePathes (int argc, char **pp_argv, char *p_source, char *p_target, char *p_verilogWork);
 static inline void PrintText (char ** const pp_source, int size);
 
 // === MAIN ===
@@ -37,19 +28,24 @@ int main (int argc, char **pp_argv)
 
 // Test is switched off
 #else
-    char *p_sourceFile = NULL;
-    char *p_targetFile = NULL;
+    char sourceFile[FILE_NAME_LENGTH_LIMIT + 1] = {'\0'};
+    char targetFile[FILE_NAME_LENGTH_LIMIT + 1] = {'\0'};
+    char verilogWorkFolder[FILE_NAME_LENGTH_LIMIT + 1] = {'\0'};
 
     // Handle command line input parameters
-    if (!HandleArgument(argc, pp_argv, &p_sourceFile, &p_targetFile))
+    if (!GeneratePathes(argc, pp_argv, sourceFile, targetFile, verilogWorkFolder))
     {
+        perror("Undefined I/O file pathes.");
         return -1;
     }
-    StartDisplay(p_sourceFile, p_targetFile);
+    StartDisplay(sourceFile, targetFile, VERILOG_DEF_FILE);
+
+    // Create Verilog Definition File
+    WriteVerilogDefFile(VERILOG_DEF_FILE, VERILOG_DEF, verilogWorkFolder, targetFile, false);
 
     // Read source file
     textSize_t textParam;
-    char ** const pp_source = ReadFile(p_sourceFile, &textParam);
+    char ** const pp_source = ReadFile(sourceFile, &textParam);
     if (pp_source == NULL)
     {
         perror("No source file was detected.");
@@ -57,18 +53,18 @@ int main (int argc, char **pp_argv)
     }
 
     // Print source file to the console
-    printf("--- The input source's raw data: '%s' ---\n", p_sourceFile);
+    printf("--- The input source's raw data: '%s' ---\n", sourceFile);
     PrintText(pp_source, textParam.rowSize);
 
     // Compile the input
     char **pp_compiled = CompileCode(pp_source, &textParam);
 
     // Print the compiled code to the console
-    printf("\n--- The compiled code: '%s' ---\n", p_targetFile);
+    printf("\n--- The compiled code: '%s' ---\n", targetFile);
     PrintText(pp_compiled, textParam.rowSize);
 
     //Write the compiled code to the target file
-    WriteFile(p_targetFile, pp_compiled, textParam.rowSize, true);
+    WriteFile(targetFile, pp_compiled, textParam.rowSize, true);
 
     // Detect the invalid parameters and print to the console
     puts("");
@@ -90,10 +86,11 @@ int main (int argc, char **pp_argv)
 *
 * @param[in] p_sourcePath Source file path.
 * @param[in] p_targetPath Target file path.
+* @param[in] p_targetPath Target file path.
 *
 * @return void.
 */
-static inline void StartDisplay (const char * const p_sourcePath, const char * const p_targetPath)
+static inline void StartDisplay (const char * const p_sourcePath, const char * const p_targetPath, const char * const p_verilogDefPath)
 {
     time_t t = time(NULL);
     struct tm tm = *localtime(&t);
@@ -103,44 +100,66 @@ static inline void StartDisplay (const char * const p_sourcePath, const char * c
     printf("| %02d-%02d-%04d v2                 |\n", tm.tm_mon + 1, tm.tm_mday, tm.tm_year + 1900);
     puts("=================================\n");
     printf("Input file: '%s'\n", p_sourcePath);
-    printf("Output file: '%s'\n\n", p_targetPath);
+    printf("Output file: '%s'\n", p_targetPath);
+    printf("Verilog definition file: '%s'\n\n", p_verilogDefPath);
 }
 
 //
 /*!
-* @brief .
+* @brief Generates the file path depending on the input argument
 *
-* @param[in] p_sourcePath Source file path.
-* @param[in] p_targetPath Target file path.
+* @param[in]  argc Number of standard I/O arguments.
+* @param[in]  pp_argv Standard I/O arguments.
+* @param[out] p_source Source file path.
+* @param[out] p_target Target file path.
+* @param[out] p_verilogWork Verilog working subfolder.
 *
-* @return void.
+* @return Valid, if each path is exists.
 */
-static bool HandleArgument(int argc, char ** pp_argv, char **pp_source, char **pp_target)
+static bool GeneratePathes (int argc, char **pp_argv, char *p_source, char *p_target, char *p_verilogWork)
 {
-    *pp_source = SOURCE_FILE;
-    *pp_target = TARGET_FILE;
-    bool b_succes = true;
+    // Create defaults
+    strcpy(p_source, SOURCE_FILE_NAME);
+    strcpy(p_verilogWork, "");
 
-    switch (argc)
+    if (argc > 1)
     {
-        case 1:
-            // NOP
-        break;
-        case 2:
-            *pp_source = pp_argv[1];
-        break;
-        case 3:
-            *pp_source = pp_argv[1];
-            *pp_target = pp_argv[2];
-        break;
-        default:
+        // Set source path by 2nd input argument
+        strcpy(p_source, pp_argv[1]);
+        // Remove file extension if exists: ".*"
+        int i = 0;
+        while (p_source[i])
+        {
+            if (p_source[i] == '.')
+            {
+                p_source[i] = '\0';
+                break;
+            }
+
+            i++;
+        }
+
+        // Set Verilog Working Subfolder by 3rd input argument
+        if (argc >= 2)
+        {
+            snprintf(p_verilogWork, FILE_NAME_LENGTH_LIMIT, "%s/", pp_argv[2]);
+        }
+
+        if (argc > 2)
+        {
             perror("Too many input arguments.");
-            b_succes = false;
-        break;
+        }
     }
 
-    return b_succes;
+    // Format source and compiled target code pathes
+    snprintf(p_target, FILE_NAME_LENGTH_LIMIT, "%s%s", p_source, TARGET_FILE_EXTENSION);
+    snprintf(p_source, FILE_NAME_LENGTH_LIMIT, "%s%s", p_source, SOURCE_FILE_EXTENSION);
+
+    return ( (p_source == NULL) ||
+             (p_target == NULL) ||
+             (p_verilogWork == NULL) ) ? false : true;
 }
+
 /*!
 * @brief Prints the 1D string array input to the standard output.
 *

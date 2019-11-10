@@ -45,14 +45,6 @@ static void GetTextParam (char const * const p_path, textSize_t * const p_textPa
 
 // === Public Functions ===
 //
-/*
-** @brief Reading each lines to 1D array of strings from a text file.
-*
-* @param[in] p_path The path of the text file.
-* @param[out] textSize parameters: bufferSize, rowSize.
-*
-* @return MEMORY ALLOCATION -> String array of text lines
-*/
 char ** const ReadFile (const char * const p_path, textSize_t * const p_textParam)
 {
     FILE * const p_file  = fopen(p_path, "r");
@@ -105,17 +97,7 @@ char ** const ReadFile (const char * const p_path, textSize_t * const p_textPara
     return pp_getText;
 }
 
-/*
-** @brief Writing 1D array of strings to a text file.
-*
-* @param[in] p_path The path of the text file.
-* @param[in] pp_data The string array to be written.
-* @param[in] rows The size of the pp_data 1D array.
-* @param[in] addEOL Add end of line character (e.g. '\n').
-*
-* @return void
-*/
-void WriteFile (const char * const p_path, char **pp_data, const int rows, bool addEOL)
+void WriteFile (const char * const p_path, char **pp_data, const int rows, bool b_addEOL)
 {
     FILE * const p_file = fopen(p_path, "w");
 
@@ -128,7 +110,7 @@ void WriteFile (const char * const p_path, char **pp_data, const int rows, bool 
     int i;
     for (i = 0; i < rows; i++)
     {
-        if (addEOL)
+        if (b_addEOL)
         {
             fprintf(p_file, "%s%c", pp_data[i], EOL_CHAR);
         }
@@ -141,14 +123,28 @@ void WriteFile (const char * const p_path, char **pp_data, const int rows, bool 
     fclose(p_file);
 }
 
-/*
-** @brief Clean up of 1D string array memory allocation.
-*
-* @param[in] pp_stringArray The string array to be cleaned.
-* @param[in] rows The size of the pp_stringArray 1D array.
-*
-* @return void
-*/
+void WriteVerilogDefFile (const char * const p_path, char *p_define, char *p_subfolder, char *p_data, bool b_append)
+{
+    char fileAttribute[] = "w";
+
+    if (b_append)
+    {
+        strcpy(fileAttribute, "a");
+    }
+
+    FILE * const p_file = fopen(p_path, fileAttribute);
+
+    if (p_file == NULL)
+    {
+        perror("Error at output file opening.\n");
+        return;
+    }
+
+    fprintf(p_file, "%s\"%s%s\"\n", p_define, p_subfolder, p_data);
+
+    fclose(p_file);
+}
+
 void CleanupText (char **pp_stringArray, int rows)
 {
     int i;

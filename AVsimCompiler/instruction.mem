@@ -1,5 +1,0 @@
-/*000*/ 4_0000004F_00000002 //  load settings
-/*001*/ 2_00000002_0000000A //  writes 0xa  at 0x2 address
-/*002*/ 1_00012A4F_00000000 //  reads the 0x12a4f address
-/*003*/ 0_00000000_00000000 //  no operation
-/*004*/ 3_00000000_00000008 //  wait 8 assertion

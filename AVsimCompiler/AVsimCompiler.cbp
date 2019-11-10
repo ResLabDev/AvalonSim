@@ -32,7 +32,6 @@
 		<Compiler>
 			<Add option="-Wall" />
 		</Compiler>
-		<Unit filename="avalon.txt" />
 		<Unit filename="source/compile.c">
 			<Option compilerVar="CC" />
 		</Unit>
@@ -44,11 +43,11 @@
 		<Unit filename="source/main.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="source/main.h" />
 		<Unit filename="source/notify_invalid.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="source/notify_invalid.h" />
-		<Unit filename="test/TestAvalon.txt" />
 		<Unit filename="test/test.c">
 			<Option compilerVar="CC" />
 		</Unit>
@@ -57,7 +56,6 @@
 			<code_completion />
 			<envvars />
 			<debugger />
-			<lib_finder disable_auto="1" />
 		</Extensions>
 	</Project>
 </CodeBlocks_project_file>

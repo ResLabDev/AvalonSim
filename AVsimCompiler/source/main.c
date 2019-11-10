@@ -16,7 +16,7 @@
 #endif // TEST_ENABLE
 
 #define TEST_ON 0
-#define SOURCE_FILE "avalon.txt"
+#define SOURCE_FILE "instruction.av"
 #define TARGET_FILE "instruction.mem"
 
 // === Protected Function Prototypes ===

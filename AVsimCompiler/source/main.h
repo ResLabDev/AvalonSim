@@ -29,7 +29,7 @@
 #define SOURCE_FILE_EXTENSION               ".av"
 #define TARGET_FILE_EXTENSION               ".mem"
 #define VERILOG_DEF                         "`define INSTRUCTION_PATH  "
-#define VERILOG_DEF_FILE                    "define_path.v"
+#define VERILOG_DEF_FILE                    "avsim_define.v"
 
 // === Macros ===
 //

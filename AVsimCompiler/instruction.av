@@ -1,44 +1,24 @@
-read 12a4f ffff ; reads the 0x12a4f address
-load 234f 2     ; load settings
-write 2 a       ; writes 0xa  at 0x2 address
-write 2 a       ; writes 0xa  at 0x2 address
-write 2 a       ; writes 0xa  at 0x2 address
-write 2 a       ; writes 0xa  at 0x2 address
-read 2 ffff	; reads the 0x12a4f address
-nop 15 af       ; no operation
-wait 16 8       ; wait 8 assertion
-load 234f 2     ; load settings
-read 12a4f ffff ; reads the 0x12a4f address
-nop 15 af       ; no operation
-wait 16 8       ; wait 8 assertion
-load 234f 2     ; load settings
-read 12a4f ffff ; reads the 0x12a4f address
-load 234f 2     ; load settings
-read 2 ffff	; reads the 0x12a4f address
-nop 15 af       ; no operation
-wait 16 8       ; wait 8 assertion
-load 234f 2     ; load settings
-read 12a4f ffff ; reads the 0x12a4f address
-nop 15 af       ; no operation
-wait 16 8       ; wait 8 assertion
-load 234f 2     ; load settings
-read 12a4f ffff ; reads the 0x12a4f address
-load 234f 2     ; load settings
-read 2 ffff	; reads the 0x12a4f address
-nop 15 af       ; no operation
-wait 16 8       ; wait 8 assertion
-load 234f 2     ; load settings
-read 12a4f ffff ; reads the 0x12a4f address
-nop 15 af       ; no operation
-wait 16 8       ; wait 8 assertion
-load 234f 2     ; load settings
-read 12a4f ffff ; reads the 0x12a4f address
-load 234f 2     ; load settings
-read 2 ffff	; reads the 0x12a4f address
-nop 15 af       ; no operation
-wait 16 8       ; wait 8 assertion
-load 234f 2     ; load settings
-read 12a4f ffff ; reads the 0x12a4f address
-nop 15 af       ; no operation
-wait 16 8       ; wait 8 assertion
-load 234f 2     ; load settings
+; Initialization
+load 0 01000002 ; Timing parameters: ReadWait = 1, ReadLatency = 2
+read 5 0  ; get module status
+
+; Setting the module I/O data
+write 0 1235fe  ; setting the dividend
+write 1 a12     ; setting the divisor
+write 2 1 ; starting the module
+write 2 0
+wait 0 5  ; waiting for completion
+nop 0 0   ; wait one more cycle
+
+; Obtaining the results
+read 3 0  ; get quotient
+read 4 a12; get remainder
+
+; Integer Division Module Address Mapping
+;   0x00: 32-bit dividend (cpu write)
+;   0x01: 32-bit divisor (cpu write)
+;   0x02: start operation (cpu write)
+;   0x03: 32-bit quotient (cpu read)
+;   0x04: 32-bit remainder (cpu read)
+;   0x05: bit 0: 1-bit ready (cpu read)
+;   0x06: bit 0: 1-bit done_trg (cpu read/write)

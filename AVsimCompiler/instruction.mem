@@ -1,44 +1,24 @@
-/*000*/ 1_00012A4F_00000000 //  reads the 0x12a4f address
-/*001*/ 4_0000004F_00000002 //  load settings
-/*002*/ 2_00000002_0000000A //  writes 0xa  at 0x2 address
-/*003*/ 2_00000002_0000000A //  writes 0xa  at 0x2 address
-/*004*/ 2_00000002_0000000A //  writes 0xa  at 0x2 address
-/*005*/ 2_00000002_0000000A //  writes 0xa  at 0x2 address
-/*006*/ 1_00000002_00000000 //  reads the 0x12a4f address
-/*007*/ 0_00000000_00000000 //  no operation
-/*008*/ 3_00000000_00000008 //  wait 8 assertion
-/*009*/ 4_0000004F_00000002 //  load settings
-/*010*/ 1_00012A4F_00000000 //  reads the 0x12a4f address
-/*011*/ 0_00000000_00000000 //  no operation
-/*012*/ 3_00000000_00000008 //  wait 8 assertion
-/*013*/ 4_0000004F_00000002 //  load settings
-/*014*/ 1_00012A4F_00000000 //  reads the 0x12a4f address
-/*015*/ 4_0000004F_00000002 //  load settings
-/*016*/ 1_00000002_00000000 //  reads the 0x12a4f address
-/*017*/ 0_00000000_00000000 //  no operation
-/*018*/ 3_00000000_00000008 //  wait 8 assertion
-/*019*/ 4_0000004F_00000002 //  load settings
-/*020*/ 1_00012A4F_00000000 //  reads the 0x12a4f address
-/*021*/ 0_00000000_00000000 //  no operation
-/*022*/ 3_00000000_00000008 //  wait 8 assertion
-/*023*/ 4_0000004F_00000002 //  load settings
-/*024*/ 1_00012A4F_00000000 //  reads the 0x12a4f address
-/*025*/ 4_0000004F_00000002 //  load settings
-/*026*/ 1_00000002_00000000 //  reads the 0x12a4f address
-/*027*/ 0_00000000_00000000 //  no operation
-/*028*/ 3_00000000_00000008 //  wait 8 assertion
-/*029*/ 4_0000004F_00000002 //  load settings
-/*030*/ 1_00012A4F_00000000 //  reads the 0x12a4f address
-/*031*/ 0_00000000_00000000 //  no operation
-/*032*/ 3_00000000_00000008 //  wait 8 assertion
-/*033*/ 4_0000004F_00000002 //  load settings
-/*034*/ 1_00012A4F_00000000 //  reads the 0x12a4f address
-/*035*/ 4_0000004F_00000002 //  load settings
-/*036*/ 1_00000002_00000000 //  reads the 0x12a4f address
-/*037*/ 0_00000000_00000000 //  no operation
-/*038*/ 3_00000000_00000008 //  wait 8 assertion
-/*039*/ 4_0000004F_00000002 //  load settings
-/*040*/ 1_00012A4F_00000000 //  reads the 0x12a4f address
-/*041*/ 0_00000000_00000000 //  no operation
-/*042*/ 3_00000000_00000008 //  wait 8 assertion
-/*043*/ 4_0000004F_00000002 //  load settings
+// Initialization
+/*000*/ 4_00000000_01000002 // Timing parameters: ReadWait = 1, ReadLatency = 2
+/*001*/ 1_00000005_00000000 // get module status
+
+// Setting the module I/O data
+/*002*/ 2_00000000_001235FE // setting the dividend
+/*003*/ 2_00000001_00000A12 // setting the divisor
+/*004*/ 2_00000002_00000001 // starting the module
+/*005*/ 2_00000002_00000000 //
+/*006*/ 3_00000000_00000005 // waiting for completion
+/*007*/ 0_00000000_00000000 // wait one more cycle
+
+// Obtaining the results
+/*008*/ 1_00000003_00000000 // get quotient
+/*009*/ 1_00000004_00000000 //
+
+// Integer Division Module Address Mapping
+//   0x00: 32-bit dividend (cpu write)
+//   0x01: 32-bit divisor (cpu write)
+//   0x02: start operation (cpu write)
+//   0x03: 32-bit quotient (cpu read)
+//   0x04: 32-bit remainder (cpu read)
+//   0x05: bit 0: 1-bit ready (cpu read)
+//   0x06: bit 0: 1-bit done_trg (cpu read/write)

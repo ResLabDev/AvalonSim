@@ -5,7 +5,6 @@
 */
 
 #include <stdio.h>
-#include <time.h>
 
 #include "main.h"
 
@@ -92,12 +91,9 @@ int main (int argc, char **pp_argv)
 */
 static inline void StartDisplay (const char * const p_sourcePath, const char * const p_targetPath, const char * const p_verilogDefPath)
 {
-    time_t t = time(NULL);
-    struct tm tm = *localtime(&t);
-
     puts("=================================");
     puts("| COMPILER FOR AVALON SIMULATOR |");
-    printf("| %02d-%02d-%04d v2                 |\n", tm.tm_mon + 1, tm.tm_mday, tm.tm_year + 1900);
+    printf("| %s %s                 |\n", RELEASE_DATE, VERSION);
     puts("=================================\n");
     printf("Input file: '%s'\n", p_sourcePath);
     printf("Output file: '%s'\n", p_targetPath);

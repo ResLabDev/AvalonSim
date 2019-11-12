@@ -24,12 +24,14 @@
 
 // === Constant Definitions ===
 //
-#define FILE_NAME_LENGTH_LIMIT              20
-#define SOURCE_FILE_NAME                    "instruction"
-#define SOURCE_FILE_EXTENSION               ".av"
-#define TARGET_FILE_EXTENSION               ".mem"
-#define VERILOG_DEF                         "`define INSTRUCTION_PATH  "
-#define VERILOG_DEF_FILE                    "avsim_define.v"
+#define FILE_NAME_LENGTH_LIMIT      20
+#define SOURCE_FILE_NAME            "instruction"
+#define SOURCE_FILE_EXTENSION       ".av"
+#define TARGET_FILE_EXTENSION       ".mem"
+#define VERILOG_DEF                 "`define INSTRUCTION_PATH  "
+#define VERILOG_DEF_FILE            "avsim_define.v"
+#define RELEASE_DATE                "11-11-2019"
+#define VERSION                     "v2"
 
 // === Macros ===
 //

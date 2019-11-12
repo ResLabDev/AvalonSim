@@ -87,6 +87,11 @@ static bool SplitInstruction (const char * const p_source, instruction_t * const
                 buffer[j] = '\0';
                 j = 0;
             }
+            else if (INPUT_COMMENT == p_source[i])  // Just comment field is detected
+            {
+                p_instruction->b_justComment = true;
+                state = st_Comment;
+            }
             else
             {
                 // Skipping the input delimiters
@@ -402,7 +407,7 @@ char **CompileCode (char **pp_source, const textSize_t * const p_textParam)
         return NULL;
     }
 
-    instruction_t instruction = {false, {'\0'}, {'\0'}, {'\0'}, {'\0'}};
+    instruction_t instruction = {false, false, {'\0'}, {'\0'}, {'\0'}, {'\0'}};
     char converted[TEXT_BUFFER_LIMIT + 1] = {'\0'};
     int progCount = 0;
     char pcReg[] = PC_REG_PATTERN;
@@ -411,25 +416,32 @@ char **CompileCode (char **pp_source, const textSize_t * const p_textParam)
     {
         if (SplitInstruction(pp_source[i], &instruction))
         {
-            if (ValidateInstruction(&instruction))
+            if (!instruction.b_justComment) // Detect if line contains instructions not just comments
             {
-                CompileInstruction(&instruction);
+                if (ValidateInstruction(&instruction))
+                {
+                    CompileInstruction(&instruction);
+                }
+
+                strcpy(pcReg, PC_REG_PATTERN);
+                SetProgramCounter(pcReg, &instruction, progCount);
+                sprintf(converted, "%s%s%c%s%c%s%c%s%c%s", pcReg, instruction.opCode,OUTPUT_DELIM,
+                    instruction.address, OUTPUT_DELIM, instruction.data, ' ', OUTPUT_COMMENT, ' ', instruction.comment);
+
+                if (instruction.b_isValid)
+                {
+                    progCount++;
+                }
             }
-            strcpy(pcReg, PC_REG_PATTERN);
-            SetProgramCounter(pcReg, &instruction, progCount);
-            sprintf(converted, "%s%s%c%s%c%s%s%s", pcReg, instruction.opCode,OUTPUT_DELIM,
-                instruction.address, OUTPUT_DELIM, instruction.data, OUTPUT_COMMENT, instruction.comment);
-            if (instruction.b_isValid)
+            else
             {
-                progCount++;
+                sprintf(converted, "%s%s", OUTPUT_COMMENT, instruction.comment);
             }
         }
         else
         {
             snprintf(converted, TEXT_BUFFER_LIMIT + 1, "%s->|%s|", INPUT_ERROR, pp_source[i]);
         }
-
-        //ConvertInstruction(pp_source[i], converted);
 
         // Memory allocation for each lines
         pp_result[i] = (char *) calloc(strlen(converted) + 1, sizeof(char));

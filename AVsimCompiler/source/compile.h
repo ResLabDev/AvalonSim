@@ -30,7 +30,7 @@
 #define INVALID             'X'
 #define INPUT_ERROR         "// N/A:"
 #define INPUT_COMMENT       ';'
-#define OUTPUT_COMMENT      " // "
+#define OUTPUT_COMMENT      "//"
 #define OUTPUT_DELIM        '_'
 #define INSTR_LIMIT         (1 + 2*HEX_LIMIT + 2)                       // 1_8_8 : opcode_address_data
 #define COMMENT_LIMIT       (TEXT_BUFFER_LIMIT - INSTR_LIMIT - 8 - 4)   // 8: PC_REG_PATTERN; 4: OUTPUT_COMMENT
@@ -52,6 +52,7 @@ typedef enum
 typedef struct instruction
 {
     bool b_isValid;
+    bool b_justComment;
     char opCode[OPCODE_LIMIT + 1];
     char address[HEX_LIMIT + 1];
     char data[HEX_LIMIT + 1];

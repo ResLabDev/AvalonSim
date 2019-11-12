@@ -12,6 +12,7 @@
 #include "..\source\file_access.h"
 #include "..\source\compile.h"
 #include "..\source\notify_invalid.h"
+#include "..\source\common.h"
 
 // === Type Definitions ===
 //

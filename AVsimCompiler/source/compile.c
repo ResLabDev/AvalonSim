@@ -63,6 +63,7 @@ static bool SplitInstruction (const char * const p_source, instruction_t * const
     enum stateFSM state = st_OpCode;
     bool b_readInstr = false;
     bool b_nextState = false;
+    bool b_isComment = false;
 
     int i = 0;
     int j = 0;
@@ -73,7 +74,7 @@ static bool SplitInstruction (const char * const p_source, instruction_t * const
         //  handle comments different type via delimiter
         if (state != st_Comment)
         {
-            if ( alpha = IsAlpha(p_source[i]) )
+            if ( (alpha = IsAlpha(p_source[i])) )
             {
                 buffer[j] = p_source[i];
                 j++;
@@ -123,10 +124,10 @@ static bool SplitInstruction (const char * const p_source, instruction_t * const
             case st_Comment:
                 if (p_source[i] == INPUT_COMMENT)
                 {
-                    b_readInstr = true;
+                    b_isComment = true;
                     break;
                 }
-                if (b_readInstr)
+                if (b_isComment)
                 {
                     buffer[j] = p_source[i];
                     j++;
@@ -143,24 +144,14 @@ static bool SplitInstruction (const char * const p_source, instruction_t * const
         i++;
     }
 
-    return (state >= st_Data) ? true : false;
-}
-
-/*!
-* @brief Converts the input string to uppercase.
-*
-* @param[in] p_str Input string will be converted.
-*
-* @return void
-*/
-static void ToUpperCase (char * const p_str)
-{
-    int i = 0;
-    while (p_str[i])
+    // No comment is detected
+    if (!b_isComment)
     {
-        p_str[i] = (char) toupper((int) p_str[i]);
-        i++;
+        strcpy(p_instruction->data, buffer);
+        strcpy(p_instruction->comment, "\0");
     }
+
+    return (state >= st_Data) ? true : false;
 }
 
 /*!
@@ -206,7 +197,7 @@ static void SetProgramCounter (char * const p_pcReg, const instruction_t * const
 */
 static bool ValidateOpCode (char * const p_opcode)
 {
-    ToUpperCase(p_opcode);
+    ToUpperCase(p_opcode, p_opcode);
 
     for (int i = 0; i < (sizeof(OP_CODES_LUT) / sizeof(OP_CODES_LUT[0])); i++)
     {
@@ -228,7 +219,7 @@ static bool ValidateOpCode (char * const p_opcode)
 */
 static bool ValidateHexa (char * const p_hexa)
 {
-    ToUpperCase(p_hexa);
+    ToUpperCase(p_hexa, p_hexa);
     // 8 Byte hexadecimal size is out of range
     if (strlen(p_hexa) > strlen(HEX_DATA_PATTERN))
     {

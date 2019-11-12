@@ -10,6 +10,8 @@
 #include "file_access.h"
 #include "compile.h"
 #include "notify_invalid.h"
+#include "help.h"
+
 
 // === Testing ===
 //

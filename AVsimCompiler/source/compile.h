@@ -11,10 +11,10 @@
 #include <stddef.h>
 #include <string.h>
 #include <stdlib.h>
-#include <ctype.h>
 #include <stdbool.h>
 
 #include "file_access.h"
+#include "common.h"
 
 
 // === Constant Definitions ===

@@ -27,6 +27,12 @@ int main (int argc, char **pp_argv)
 
 // Test is switched off
 #else
+    // Detect "help" input argument
+    if (IsHelpRequest(argc, pp_argv))
+    {
+        return 0;
+    }
+
     char sourceFile[FILE_NAME_LENGTH_LIMIT + 1] = {'\0'};
     char targetFile[FILE_NAME_LENGTH_LIMIT + 1] = {'\0'};
     char verilogWorkFolder[FILE_NAME_LENGTH_LIMIT + 1] = {'\0'};
@@ -39,9 +45,6 @@ int main (int argc, char **pp_argv)
     }
     StartDisplay(sourceFile, targetFile, VERILOG_DEF_FILE);
 
-    // Create Verilog Definition File
-    WriteVerilogDefFile(VERILOG_DEF_FILE, VERILOG_DEF, verilogWorkFolder, targetFile, false);
-
     // Read source file
     textSize_t textParam;
     char ** const pp_source = ReadFile(sourceFile, &textParam);
@@ -50,6 +53,9 @@ int main (int argc, char **pp_argv)
         perror("No source file was detected.");
         return -1;
     }
+
+    // Create Verilog Definition File
+    WriteVerilogDefFile(VERILOG_DEF_FILE, VERILOG_DEF, verilogWorkFolder, targetFile, false);
 
     // Print source file to the console
     printf("--- The input source's raw data: '%s' ---\n", sourceFile);
@@ -131,7 +137,6 @@ static bool GeneratePathes (int argc, char **pp_argv, char *p_source, char *p_ta
                 p_source[i] = '\0';
                 break;
             }
-
             i++;
         }
 

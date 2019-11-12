@@ -1,15 +1,15 @@
 # depslib dependency file v1.0
-1573329655 source:d:\development\avalonsimulator\avsimcompiler\source\compile.c
+1573566730 source:d:\development\avalonsimulator\avsimcompiler\source\compile.c
 	"compile.h"
 
-1573329090 d:\development\avalonsimulator\avsimcompiler\source\compile.h
+1573563388 d:\development\avalonsimulator\avsimcompiler\source\compile.h
 	<stdio.h>
 	<stddef.h>
 	<string.h>
 	<stdlib.h>
-	<ctype.h>
 	<stdbool.h>
 	"file_access.h"
+	"common.h"
 
 1573390412 d:\development\avalonsimulator\avsimcompiler\source\file_access.h
 	<stdio.h>
@@ -21,9 +21,8 @@
 1573393953 source:d:\development\avalonsimulator\avsimcompiler\source\file_access.c
 	"file_access.h"
 
-1573394033 source:d:\development\avalonsimulator\avsimcompiler\source\main.c
+1573567789 source:d:\development\avalonsimulator\avsimcompiler\source\main.c
 	<stdio.h>
-	<time.h>
 	"main.h"
 
 1572983436 d:\development\avalonsimulator\avsimcompiler\source\notify_invalid.h
@@ -31,21 +30,47 @@
 	<stdbool.h>
 	"compile.h"
 
-1572983369 d:\development\avalonsimulator\avsimcompiler\test\test.h
+1573567060 d:\development\avalonsimulator\avsimcompiler\test\test.h
 	<stdio.h>
 	"..\source\file_access.h"
 	"..\source\compile.h"
 	"..\source\notify_invalid.h"
+	"..\source\common.h"
 
 1572983432 source:d:\development\avalonsimulator\avsimcompiler\source\notify_invalid.c
 	"notify_invalid.h"
 
-1573328982 source:d:\development\avalonsimulator\avsimcompiler\test\test.c
+1573567614 source:d:\development\avalonsimulator\avsimcompiler\test\test.c
 	"test.h"
 
-1573394333 d:\development\avalonsimulator\avsimcompiler\source\main.h
+1573567565 d:\development\avalonsimulator\avsimcompiler\source\main.h
 	"file_access.h"
 	"compile.h"
 	"notify_invalid.h"
+	"help.h"
 	"..\test\test.h"
+
+1573568071 d:\development\avalonsimulator\avsimcompiler\source\help.h
+	<stdio.h>
+	<stdbool.h>
+	<string.h>
+	"common.h"
+
+1573563402 d:\development\avalonsimulator\avsimcompiler\source\common.h
+	<ctype.h>
+
+1573563637 source:d:\development\avalonsimulator\avsimcompiler\source\common.c
+	"common.h"
+
+1573567651 source:d:\development\avalonsimulator\avsimcompiler\source\help.c
+	"help.h"
+
+1573564132 d:\development\avalonsimulator\avsimcompiler\source\help_guide.h
+	<stdio.h>
+	<stdbool.h>
+	<string.h>
+	"common.h"
+
+1573564093 source:d:\development\avalonsimulator\avsimcompiler\source\help_guide.c
+	"help_guide.h"
 

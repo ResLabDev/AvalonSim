@@ -32,6 +32,10 @@
 		<Compiler>
 			<Add option="-Wall" />
 		</Compiler>
+		<Unit filename="source/common.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="source/common.h" />
 		<Unit filename="source/compile.c">
 			<Option compilerVar="CC" />
 		</Unit>
@@ -40,6 +44,10 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="source/file_access.h" />
+		<Unit filename="source/help.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="source/help.h" />
 		<Unit filename="source/main.c">
 			<Option compilerVar="CC" />
 		</Unit>

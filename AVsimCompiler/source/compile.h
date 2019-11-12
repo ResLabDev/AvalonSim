@@ -28,7 +28,7 @@
 #define HEX_DATA_PATTERN    "00000000"
 #define HEX_LIMIT           8
 #define INVALID             'X'
-#define INPUT_ERROR         "// N/A:"
+#define INPUT_ERROR         '/'
 #define INPUT_COMMENT       ';'
 #define OUTPUT_COMMENT      "//"
 #define OUTPUT_DELIM        '_'

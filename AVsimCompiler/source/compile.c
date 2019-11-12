@@ -77,8 +77,8 @@ static bool SplitInstruction (const char * const p_source, instruction_t * const
             if ( (alpha = IsAlpha(p_source[i])) )
             {
                 buffer[j] = p_source[i];
-                j++;
                 b_readInstr = true;
+                j++;
             }
             else if (b_readInstr)
             {
@@ -107,6 +107,7 @@ static bool SplitInstruction (const char * const p_source, instruction_t * const
                 {
                     strcpy(p_instruction->opCode, buffer);
                     state = st_Address;
+                    p_instruction->b_justComment = false;
                     b_nextState = false;
                 }
             break;
@@ -425,8 +426,8 @@ char **CompileCode (char **pp_source, const textSize_t * const p_textParam)
 
                 strcpy(pcReg, PC_REG_PATTERN);
                 SetProgramCounter(pcReg, &instruction, progCount);
-                sprintf(converted, "%s%s%c%s%c%s%c%s%c%s", pcReg, instruction.opCode,OUTPUT_DELIM,
-                    instruction.address, OUTPUT_DELIM, instruction.data, ' ', OUTPUT_COMMENT, ' ', instruction.comment);
+                sprintf(converted, "%s%s%c%s%c%s%c%s%s", pcReg, instruction.opCode,OUTPUT_DELIM,
+                    instruction.address, OUTPUT_DELIM, instruction.data, ' ', OUTPUT_COMMENT, instruction.comment);
 
                 if (instruction.b_isValid)
                 {
@@ -440,7 +441,8 @@ char **CompileCode (char **pp_source, const textSize_t * const p_textParam)
         }
         else
         {
-            snprintf(converted, TEXT_BUFFER_LIMIT + 1, "%s->|%s|", INPUT_ERROR, pp_source[i]);
+            // Skip dummy data or simple new line
+            strcpy(converted, "");
         }
 
         // Memory allocation for each lines

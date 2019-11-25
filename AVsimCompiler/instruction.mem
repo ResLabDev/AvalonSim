@@ -1,5 +1,5 @@
 // Initialization
-/*000*/ 4_00000000_01000002 // Timing parameters: ReadWait = 1, ReadLatency = 2
+/*000*/ 4_00000000_00020001 // Timing parameters: ReadWait = 1, ReadLatency = 2\n\
 /*001*/ 1_00000005_00000000 // get module status
 
 // Setting the module I/O data

@@ -1,5 +1,5 @@
 ; Initialization
-load 0 01000002 ; Timing parameters: ReadWait = 1, ReadLatency = 2
+load 0 00020001 ; Timing parameters: ReadWait = 1, ReadLatency = 2\n\
 read 5 0  ; get module status
 
 ; Setting the module I/O data

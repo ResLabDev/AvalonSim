@@ -39,17 +39,17 @@ static inline const char *GetGuide (void)
        - 2. 4 Byte address and data in hexadecimal format.\n\
        - 3. Maximum value of program counter: 999.\n\
   V. Timing settings: 1 Byte format with the usage of LOAD operating code.\n\
-       - 1. data: <ReadWait><WriteWait><Hold><ReadLatency> (MSB --> LSB)\n\
+       - 1. data: <Hold><ReadLatency><WriteWait><ReadWait> (MSB --> LSB)\n\
        - 2. address: 0x000000<Setup> (MSB --> LSB)\n\
-       - 3. Example: \"load 11 2233aaff ; setting avalon timing parameters\"\n\
-              => Setup: 0x11, ReadWait: 0x22, WriteWait: 0x33, Hold: 0xaa, ReadLatency: 0xff\n\
+       - 3. Example: \"load 11 2233aa01 ; setting avalon timing parameters\"\n\
+              => Setup: 0x11, ReadWait: 0x01, WriteWait: 0xaa, ReadLatency: 0x33, Hold: 0x22\n\
   VI. Input Source Format Error Handling:\n\
       - 1. The specific line of the compiled output will be commented out in case of any source error.\n\
       - 2. Compiler is able to distinguish the 3 different type of errors: opcode, address, data.\n\
              There will be placed an 'X' key where the input error is occurred.\n\
   VII. Source Example:\n\
       ; Initialization\n\
-      load 0 01000002 ; Timing parameters: ReadWait = 1, ReadLatency = 2\n\
+      load 0 00020001 ; Timing parameters: ReadWait = 1, ReadLatency = 2\n\
       read 5 0        ; get module status\n\
       \n\
       ; Setting the module I/O data\n\

@@ -15,11 +15,11 @@
 module avalon_master
 #( parameter
     // Avalon bus size
-    ADDR_SIZE          = 32,    // 1-64
-    DATA_SIZE          = 32,    // 8, 16, 32, 64, 128, 256, 512, 1024 for readdata and writedata
+    ADDRESS_SIZE        = 32,    // 1-64
+    DATA_SIZE           = 32,    // 8, 16, 32, 64, 128, 256, 512, 1024 for readdata and writedata
     // Instruction table size
-    OPCODE_SIZE        = 4,     // Operation code
-    INSTR_SIZE         = 68,    // opcode|address|data -> 4|32|32
+    OPCODE_SIZE         = 4,     // Operation code
+    INSTR_SIZE          = 68,    // opcode|address|data -> 4|32|32
     INSTR_LIMIT_SIZE    = 7     // Maximum number of acceptable instruction: 2^INSTR_LIMIT_SIZE
 )
 ( 
@@ -30,14 +30,16 @@ module avalon_master
     output reg                          avmaster_chipselect,
     output reg                          avmaster_read,
     output reg                          avmaster_write,
-    output wire [ADDR_SIZE-1:0]         avmaster_address,
+    output wire [ADDRESS_SIZE-1:0]      avmaster_address,
     output wire [DATA_SIZE-1:0]         avmaster_writedata,
     input wire [DATA_SIZE-1:0]          avmaster_readdata,
     // Avalon Master Watch
     output wire [DATA_SIZE-1:0]         readdataWatch,
     // Instruction I/O
     output wire [INSTR_LIMIT_SIZE-1:0]  programCounter,
-    input wire [INSTR_SIZE-1:0]         instructionVector
+    input wire [INSTR_SIZE-1:0]         instructionVector,
+    // Status
+    output wire                         simReady
   );
  
 // === Constant Definitions ===
@@ -67,7 +69,7 @@ module avalon_master
 // === Signal Declarations ===
     // Decoding signals
     wire [3:0]              opCode;  // Operation code
-    wire [ADDR_SIZE-1:0]    address; // Address line
+    wire [ADDRESS_SIZE-1:0]    address; // Address line
     wire [DATA_SIZE-1:0]    data;    // Data line
      
     // State register
@@ -271,8 +273,10 @@ module avalon_master
             end // ST_LOAD
         //------- Increment Program Counter --------
             ST_PC_INCR: begin
-                pcNext_reg = pc_reg + 1;
-                stateNext_reg = ST_FETCH;
+                if (~simReady) begin            // Simulator is not finished
+                    pcNext_reg = pc_reg + 1;
+                    stateNext_reg = ST_FETCH;
+                end
             end // ST_PC_INCR
        endcase // state_reg
          
@@ -281,26 +285,27 @@ module avalon_master
 // === Controller Logic ===
      // FETCH instruction table
      assign opCode = instructionVector [INSTR_SIZE-1:INSTR_SIZE-OPCODE_SIZE];
-     assign address = instructionVector [INSTR_SIZE-(OPCODE_SIZE+1):INSTR_SIZE-(ADDR_SIZE+OPCODE_SIZE)];
+     assign address = instructionVector [INSTR_SIZE-(OPCODE_SIZE+1):INSTR_SIZE-(ADDRESS_SIZE+OPCODE_SIZE)];
      assign data = instructionVector [DATA_SIZE-1:0];
+     assign simReady = (instructionVector === {INSTR_SIZE{1'bx}});  // Determine unknown logic with case equality
      
      // Wait state controll signal
      assign waitEnd = (waitCount_reg == (wait_reg-1));
      
      // LOAD parameters
      /* opcode: 4 - LOAD : PARAM = 2xhex = 8bit	
-          address|data = 000000(setup)	| (readwait, writewait, hold, read_latency) */
+          address|data = 000000(setup)	| (hold, readLatency, writeWait, readWait) */
      assign setup = (state_reg == ST_LOAD) ? address[AVALON_PARAM_SIZE-1:0] : 0;
-     assign readWait = (state_reg == ST_LOAD) ? data[4*AVALON_PARAM_SIZE-1:3*AVALON_PARAM_SIZE] : 0;
-     assign writeWait = (state_reg == ST_LOAD) ? data[3*AVALON_PARAM_SIZE-1:2*AVALON_PARAM_SIZE] : 0;
-     assign hold = (state_reg == ST_LOAD) ? data[2*AVALON_PARAM_SIZE-1:AVALON_PARAM_SIZE] : 0;
-     assign readLatency = (state_reg == ST_LOAD) ? data[AVALON_PARAM_SIZE-1:0] : 0;
+     assign hold = (state_reg == ST_LOAD) ? data[4*AVALON_PARAM_SIZE-1:3*AVALON_PARAM_SIZE] : 0;
+     assign readLatency = (state_reg == ST_LOAD) ? data[3*AVALON_PARAM_SIZE-1:2*AVALON_PARAM_SIZE] : 0;
+     assign writeWait = (state_reg == ST_LOAD) ? data[2*AVALON_PARAM_SIZE-1:AVALON_PARAM_SIZE] : 0;
+     assign readWait = (state_reg == ST_LOAD) ? data[AVALON_PARAM_SIZE-1:0] : 0;
        
 // === Data Path ===     
      // Avalon Bus Data Path
      assign avmaster_address    = (avmaster_chipselect) ? address : 0;
      assign readdataWatch   = (readDataEN_reg) ? avmaster_readdata : 0;
-     assign writedata  = ((state_reg == ST_WRITE_TIMING) || (state_reg == ST_WRITE_HOLD)) ? data : 0;
+     assign avmaster_writedata  = ((state_reg == ST_WRITE_TIMING) || (state_reg == ST_WRITE_HOLD)) ? data : 0;
      assign programCounter = pc_reg;
 
 endmodule

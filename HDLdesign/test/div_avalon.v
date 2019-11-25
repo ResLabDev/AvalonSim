@@ -11,8 +11,8 @@
 //    0x06: bit 0: 1-bit done_trg (cpu read/write)
 module div_avalon
 	#(
-		parameter W=32,
-					 CBIT=6		// CBIT=ld(W)+1
+		parameter W     = 32,
+				  CBIT  = 6		// CBIT=ld(W)+1
 	 )
 	(
 		// To be connected to Avalon clock  input interface
@@ -29,6 +29,16 @@ module div_avalon
 		output wire div_rdy
 	);
 	
+    // Constant Definitions
+    localparam [2:0]
+        SET_DIVIDEND  = 3'h0,
+        SET_DIVISOR   = 3'h1,
+        START         = 3'h2,
+        GET_QUOTIENT  = 3'h3,
+        GET_REMAINDER = 3'h4,
+        GET_READY     = 3'h5,
+        DONE_TRG      = 3'h6;
+    
 	// Signal declaration
 	wire div_start, div_ready, set_done_trg, clr_done_trg;
 	reg [W-1:0] dvnd_reg, dvsr_reg;
@@ -65,15 +75,15 @@ module div_avalon
 	
 	// Write decoding logic
 	assign wr_en = div_write & div_chipselect;
-	assign wr_dvnd = (div_address == 3'b000) & wr_en;
-	assign wr_dvsr = (div_address == 3'b001) & wr_en;
-	assign div_start = (div_address == 3'b010) & wr_en;
-	assign clr_done_trg = (div_address == 3'b110) & wr_en;
+	assign wr_dvnd = (div_address == SET_DIVIDEND) & wr_en;
+	assign wr_dvsr = (div_address == SET_DIVISOR) & wr_en;
+	assign div_start = (div_address == START) & wr_en;
+	assign clr_done_trg = (div_address == DONE_TRG) & wr_en;
 	
 	// Read multiplexing logic
-	assign div_readdata = (div_address == 3'b011) ? quo :
-								 (div_address == 3'b100) ? rmd :
-								 (div_address == 3'b101) ? {31'b0, div_ready} : {31'b0, done_trg_reg};
+	assign div_readdata = (div_address == GET_QUOTIENT) ? quo :
+								 (div_address == GET_REMAINDER) ? rmd :
+								 (div_address == GET_READY) ? {31'b0, div_ready} : {31'b0, done_trg_reg};
 	
 	//Conduit circuit: for demonstration only
 	assign div_rdy = div_ready;

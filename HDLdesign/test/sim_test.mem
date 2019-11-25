@@ -1,0 +1,19 @@
+/*000*/ 4_00000000_00000001 // Set ReadWait to 1
+/*001*/ 1_00000005_00000000 // Check module availability
+/*002*/ 2_00000000_0000009D // Set Dividend: 157
+/*003*/ 2_00000001_00000003 // Set Divisor: 3
+/*004*/ 2_00000002_00000001 // Start the module
+/*005*/ 3_00000000_00000005 // Wait for completion
+/*006*/ 1_00000005_00000000 // Check division is finished
+/*007*/ 2_00000006_00000000 // Clear IRQ
+/*008*/ 1_00000003_00000000 // Get quotient
+/*009*/ 1_00000004_00000000 // Get reminder
+
+// 32-bit Integer Devision Memory Mapping
+// 0x00: 32-bit dividend (cpu write)
+// 0x01: 32-bit divisor (cpu write)
+// 0x02: start operation (cpu write)  
+// 0x03: 32-bit quotient (cpu read)
+// 0x04: 32-bit remainder (cpu read)
+// 0x05: bit 0: 1-bit ready (cpu read)  
+// 0x06: bit 0: 1-bit done_trg (cpu read/write)
